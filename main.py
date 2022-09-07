@@ -4,50 +4,52 @@ from pygame.locals import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
 
-verticies = (
-    (1, -1, -1),
-    (1, 1, -1),
-    (-1, 1, -1),
-    (-1, -1, -1),
-    (1, -1, 1),
-    (1, 1, 1),
-    (-1, -1, 1),
-    (-1, 1, 1)
-    )
-
-edges = (
+vertice = (
     (0,1),
-    (0,3),
-    (0,4),
-    (2,1),
-    (2,3),
-    (2,7),
-    (6,3),
-    (6,4),
-    (6,7),
-    (5,1),
-    (5,4),
-    (5,7)
+    (-1,0),
+    (1,0)
     )
 
+aresta = (
+    (0,1),
+    (1,2),
+    (2,0)
+    )
 
-def Cube():
+def Triangulo():
     glBegin(GL_LINES)
-    for edge in edges:
-        for vertex in edge:
-            glVertex3fv(verticies[vertex])
+
+    for temp_aresta in aresta:
+        for vertex in temp_aresta:
+            glVertex2iv(vertice[vertex])
     glEnd()
 
 
 def main():
-    pygame.init()
-    display = (800,600)
-    pygame.display.set_mode(display, DOUBLEBUF|OPENGL)
+    pygame.init() #Inicialize todos os módulos pygame importados
+    display = (700, 700) #Define o tamanho da tela (Plano)
+    pygame.display.set_mode(display, DOUBLEBUF|OPENGL) #insere o código do pygame dentro do display de demonstração
+    gluPerspective(80, #quantos graus o objeto será posicinado
+                   (display[0]/display[1]), #tamanho da dela, no caso 700x700,
+                   1, #o qual distante o objeto será renderizado
+                   20 #Distância a ser desenhado.
+    )
 
-    gluPerspective(45, (display[0]/display[1]), 0.13, 50.0)
+    glTranslatef(
+        0, #X
+        0, #Y
+        -3  #Z
+    )
 
-    glTranslatef(0.0,0.0, -5)
-    glRotatef(1, 3, 1, 1)
+    glRotatef(45,  # angulo de retação
+              0,  # x
+              0,  # y
+              0  # z
+              )  # Transformação geometrica de rotação
+
+
+
+    glColor3f(1,1,0)
 
     while True:
         for event in pygame.event.get():
@@ -56,10 +58,15 @@ def main():
                 quit()
 
 
+
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
-        Cube()
+        Triangulo()
+
+        glTranslatef(2, 2 , -3)
+        glRotatef(80,  2,  0,  0 )
+
         pygame.display.flip()
-        pygame.time.wait(10)
+        pygame.time.wait(100)
 
 
 main()
